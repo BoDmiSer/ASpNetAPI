@@ -10,6 +10,7 @@ namespace ASpNetAPI.Data
     {
         bool SaveChanges();
         IEnumerable<Tutorial> GetAllTutorial();
+        IEnumerable<Tutorial> GetTutorialByTitle(string title);
         Tutorial GetTutorialById(long id);
         void CreateTutorial(Tutorial tutorial);
         void UpdateTutorial(Tutorial tutorial);

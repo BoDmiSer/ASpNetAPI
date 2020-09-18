@@ -32,9 +32,17 @@ namespace ASpNetAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<TutorialReadDto>> GetTutorial()
+        public ActionResult<IEnumerable<TutorialReadDto>> GetTutorial(string title)
         {
-            var Tutorials = _repo.GetAllTutorial();
+            IEnumerable<Tutorial> Tutorials;
+            if (title == null)
+            {
+                Tutorials = _repo.GetAllTutorial();
+            }
+            else
+            {
+                Tutorials = _repo.GetTutorialByTitle(title);
+            }
             return Ok(_mapper.Map<IEnumerable<TutorialReadDto>>(Tutorials));
         }
 
