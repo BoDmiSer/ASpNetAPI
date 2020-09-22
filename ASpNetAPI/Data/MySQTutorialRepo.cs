@@ -52,6 +52,11 @@ namespace ASpNetAPI.Data
             return _context.Tutorial.FirstOrDefault(k => k.ID == id);
         }
 
+        public IEnumerable<Tutorial> GetTutorialByPublished()
+        {
+            return _context.Tutorial.Where(published => published.Published == true).ToList();
+        }
+
         public IEnumerable<Tutorial> GetTutorialByTitle(string title)
         {
             return _context.Tutorial.Where(tutorial => tutorial.Title == title).ToList();

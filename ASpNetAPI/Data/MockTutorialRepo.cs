@@ -44,6 +44,11 @@ namespace ASpNetAPI.Data
             return new Tutorial( 0,  "One", "Description", false);
         }
 
+        public IEnumerable<Tutorial> GetTutorialByPublished()
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<Tutorial> GetTutorialByTitle(string title)
         {
             throw new NotImplementedException();

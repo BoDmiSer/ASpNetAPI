@@ -10,6 +10,8 @@ using ASpNetAPI.Models;
 using AutoMapper;
 using ASpNetAPI.Dtos;
 using Microsoft.AspNetCore.JsonPatch;
+using ASpNetAPI.Pagination;
+using ASpNetAPI.ViewModel;
 
 namespace ASpNetAPI.Controllers
 {
@@ -32,7 +34,7 @@ namespace ASpNetAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<TutorialReadDto>> GetTutorial(string title)
+        public ActionResult<PageTutorialDto> GetTutorial(string title, int page=0, int size=3)
         {
             IEnumerable<Tutorial> Tutorials;
             if (title == null)
@@ -43,7 +45,15 @@ namespace ASpNetAPI.Controllers
             {
                 Tutorials = _repo.GetTutorialByTitle(title);
             }
-            return Ok(_mapper.Map<IEnumerable<TutorialReadDto>>(Tutorials));
+
+            PageTutorialList<Tutorial> PaginationTutorials;
+            PaginationTutorials = PageTutorialList<Tutorial>.Create(Tutorials, page, size);
+            PageTutorialViewModel pageTutorialViewModel = new PageTutorialViewModel();
+            pageTutorialViewModel.Tutorials = PaginationTutorials;
+            pageTutorialViewModel.CurrentPage = PaginationTutorials.CurrentPage;
+            pageTutorialViewModel.TotalItems = PaginationTutorials.TotalItems;
+            pageTutorialViewModel.TotalPages = PaginationTutorials.TotalPages;
+            return Ok(_mapper.Map<PageTutorialDto>(pageTutorialViewModel));
         }
 
         // GET: api/Tutorials/5
@@ -59,7 +69,17 @@ namespace ASpNetAPI.Controllers
 
             return Ok(_mapper.Map<TutorialReadDto>(tutorial));
         }
-               
+
+
+        // Сделать разбиение на страницы (именование наверно исправить в vue)
+
+        [HttpGet ("published")]
+        public ActionResult<IEnumerable<TutorialReadDto>> GetTutorialByPublished()
+        {
+            var Tutorials = _repo.GetTutorialByPublished();
+            return Ok(_mapper.Map<IEnumerable<TutorialReadDto>>(Tutorials));
+        }
+
         //Put api/Tutorial/{id}
         [HttpPut("{id}")]
         public ActionResult UpdateTutorial(long id, TutorialUpdateDto tutorialUpdateDto)
