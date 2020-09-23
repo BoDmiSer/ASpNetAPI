@@ -34,7 +34,7 @@ namespace ASpNetAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<PageTutorialDto> GetTutorial(string title, int page=0, int size=3)
+        public ActionResult<PageTutorialDto> GetTutorial(string title, int page = 0, int size = 4)
         {
             IEnumerable<Tutorial> Tutorials;
             if (title == null)
@@ -45,15 +45,9 @@ namespace ASpNetAPI.Controllers
             {
                 Tutorials = _repo.GetTutorialByTitle(title);
             }
-
-            PageTutorialList<Tutorial> PaginationTutorials;
-            PaginationTutorials = PageTutorialList<Tutorial>.Create(Tutorials, page, size);
-            PageTutorialViewModel pageTutorialViewModel = new PageTutorialViewModel();
-            pageTutorialViewModel.Tutorials = PaginationTutorials;
-            pageTutorialViewModel.CurrentPage = PaginationTutorials.CurrentPage;
-            pageTutorialViewModel.TotalItems = PaginationTutorials.TotalItems;
-            pageTutorialViewModel.TotalPages = PaginationTutorials.TotalPages;
-            return Ok(_mapper.Map<PageTutorialDto>(pageTutorialViewModel));
+            PageTutorialViewModel<Tutorial> PaginationTutorialViewModel;
+            PaginationTutorialViewModel = PageTutorialViewModel<Tutorial>.Create(Tutorials, page,size);
+            return Ok(_mapper.Map<PageTutorialDto>(PaginationTutorialViewModel));
         }
 
         // GET: api/Tutorials/5
@@ -70,14 +64,21 @@ namespace ASpNetAPI.Controllers
             return Ok(_mapper.Map<TutorialReadDto>(tutorial));
         }
 
-
-        // Сделать разбиение на страницы (именование наверно исправить в vue)
-
-        [HttpGet ("published")]
-        public ActionResult<IEnumerable<TutorialReadDto>> GetTutorialByPublished()
+        [HttpGet("published")]
+        public ActionResult<PageTutorialDto> GetTutorialByPublished(string title, int page = 0, int size = 4)
         {
-            var Tutorials = _repo.GetTutorialByPublished();
-            return Ok(_mapper.Map<IEnumerable<TutorialReadDto>>(Tutorials));
+            IEnumerable<Tutorial> Tutorials;
+            if (title == null)
+            {
+                Tutorials = _repo.GetTutorialByPublished();
+            }
+            else
+            {
+                Tutorials = _repo.GetTutorialByPublished(title);
+            }
+            PageTutorialViewModel<Tutorial> PaginationTutorialViewModel;
+            PaginationTutorialViewModel = PageTutorialViewModel<Tutorial>.Create(Tutorials, page, size);
+            return Ok(_mapper.Map<PageTutorialDto>(PaginationTutorialViewModel));
         }
 
         //Put api/Tutorial/{id}

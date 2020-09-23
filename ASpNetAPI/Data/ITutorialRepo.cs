@@ -11,6 +11,7 @@ namespace ASpNetAPI.Data
         bool SaveChanges();
         IEnumerable<Tutorial> GetAllTutorial();
         IEnumerable<Tutorial> GetTutorialByPublished();
+        IEnumerable<Tutorial> GetTutorialByPublished(string title);
         IEnumerable<Tutorial> GetTutorialByTitle(string title);
         Tutorial GetTutorialById(long id);
         void CreateTutorial(Tutorial tutorial);

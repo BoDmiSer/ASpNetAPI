@@ -49,6 +49,11 @@ namespace ASpNetAPI.Data
             throw new NotImplementedException();
         }
 
+        public IEnumerable<Tutorial> GetTutorialByPublished(string title)
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<Tutorial> GetTutorialByTitle(string title)
         {
             throw new NotImplementedException();

@@ -13,7 +13,7 @@ namespace ASpNetAPI.Profiles
     {
         public TutorialProfile()
         {
-            CreateMap<PageTutorialViewModel, PageTutorialDto>();
+            CreateMap<PageTutorialViewModel<Tutorial>, PageTutorialDto>();
             CreateMap<Tutorial, TutorialReadDto>();
             CreateMap<TutorialCreateDto, Tutorial>();
             CreateMap<TutorialUpdateDto, Tutorial>();

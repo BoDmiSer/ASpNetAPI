@@ -57,6 +57,11 @@ namespace ASpNetAPI.Data
             return _context.Tutorial.Where(published => published.Published == true).ToList();
         }
 
+        public IEnumerable<Tutorial> GetTutorialByPublished(string title)
+        {
+            return _context.Tutorial.Where(published => (published.Published == true)&&(published.Title == title)).ToList();
+        }
+
         public IEnumerable<Tutorial> GetTutorialByTitle(string title)
         {
             return _context.Tutorial.Where(tutorial => tutorial.Title == title).ToList();
