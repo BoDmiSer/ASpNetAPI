@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ASpNetAPI.Models
 {
-    public class Tutorial
+    public class Tutorial: ITutorial
     {
         private long id;
         private string title;

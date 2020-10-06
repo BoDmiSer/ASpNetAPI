@@ -15,6 +15,7 @@ using ASpNetAPI.Data;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using AutoMapper;
 using Newtonsoft.Json.Serialization;
+using ASpNetAPI.Models;
 
 namespace ASpNetAPI
 {
@@ -41,7 +42,7 @@ namespace ASpNetAPI
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.AddScoped<ITutorialRepo, MySQTutorialRepo>();
+            services.AddScoped<ITutorialRepo<Tutorial>, MySQTutorialRepo<Tutorial>>();
             
             //services
             //.AddEntityFrameworkInMemoryDatabase()

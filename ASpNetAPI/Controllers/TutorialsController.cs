@@ -24,9 +24,9 @@ namespace ASpNetAPI.Controllers
 
         //private readonly MockTutorialRepo _repo = new MockTutorialRepo();
 
-        private readonly ITutorialRepo _repo;
+        private readonly ITutorialRepo<Tutorial> _repo;
 
-        public TutorialsController(ITutorialRepo repository, ASpNetAPIContext context, IMapper mapper)
+        public TutorialsController(ITutorialRepo<Tutorial> repository, ASpNetAPIContext context, IMapper mapper)
         {
             _repo = repository;
             _context = context;
@@ -34,16 +34,19 @@ namespace ASpNetAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<PageTutorialDto> GetTutorial(string title, int page = 0, int size = 4)
+        public async Task<ActionResult<PageTutorialDto>> GetTutorial(string title, int page = 0, int size = 4)
         {
             IEnumerable<Tutorial> Tutorials;
             if (title == null)
             {
-                Tutorials = _repo.GetAllTutorial();
+                Tutorials = await _context.Tutorial.Skip(page).Take(size).ToListAsync();
+                //Tutorials = _repo.GetAllTutorial();
             }
             else
             {
-                Tutorials = _repo.GetTutorialByTitle(title);
+                Tutorials = await _context.Tutorial.Skip(page).Take(size).ToListAsync();
+
+                //Tutorials = _repo.GetTutorialByTitle(title);
             }
             PageTutorialViewModel<Tutorial> PaginationTutorialViewModel;
             PaginationTutorialViewModel = PageTutorialViewModel<Tutorial>.Create(Tutorials, page,size);

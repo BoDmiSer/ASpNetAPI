@@ -2,11 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace ASpNetAPI.Data
 {
-    public class MockTutorialRepo : ITutorialRepo
+    public class MockTutorialRepo : ITutorialRepo<Tutorial>
     {
         public void CreateTutorial(Tutorial tutorial)
         {
@@ -19,6 +20,11 @@ namespace ASpNetAPI.Data
         }
 
         public void DeleteTutorial(Tutorial tutorial)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Tutorial FirstOrDefault(Expression<Func<Tutorial, bool>> tutorial)
         {
             throw new NotImplementedException();
         }
@@ -39,6 +45,11 @@ namespace ASpNetAPI.Data
             return tutorials;
         }
 
+        public Task<IEnumerable<Tutorial>> GetAllTutorialAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public Tutorial GetTutorialById(long id)
         {
             return new Tutorial( 0,  "One", "Description", false);
@@ -50,6 +61,11 @@ namespace ASpNetAPI.Data
         }
 
         public IEnumerable<Tutorial> GetTutorialByPublished(string title)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Tutorial> GetTutorialByPublished(Expression<Func<Tutorial, bool>> expression)
         {
             throw new NotImplementedException();
         }

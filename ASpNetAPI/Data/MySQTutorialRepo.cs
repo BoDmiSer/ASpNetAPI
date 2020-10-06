@@ -2,11 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace ASpNetAPI.Data
 {
-    public class MySQTutorialRepo : ITutorialRepo
+    public class MySQTutorialRepo<T> : ITutorialRepo<T> where T: class, ITutorial
     {
         private readonly ASpNetAPIContext _context;
 
@@ -15,56 +16,65 @@ namespace ASpNetAPI.Data
             _context = context;
         }
 
-        public void CreateTutorial(Tutorial tutorial)
+        public void CreateTutorial(T tutorial)
         {
             if (tutorial == null)
             {
                 throw new ArgumentNullException(nameof(tutorial));
             }
-            _context.Tutorial.Add(tutorial);
+            _context.Set<T>().Add(tutorial);
         }
-
-        public void DeleteAllTutorial(IEnumerable<Tutorial> tutorial)
+        public void DeleteAllTutorial(IEnumerable<T> tutorial)
         {
             if (tutorial == null)
             {
                 throw new ArgumentNullException(nameof(tutorial));
             }
-            _context.Tutorial.RemoveRange(tutorial);
+            _context.Set<T>().RemoveRange(tutorial);
         }
 
-        public void DeleteTutorial(Tutorial tutorial)
+        public void DeleteTutorial(T tutorial)
         {
             if (tutorial == null)
             {
                 throw new ArgumentNullException(nameof(tutorial));
             }
-            _context.Tutorial.Remove(tutorial);
+            _context.Set<T>().Remove(tutorial);
         }
 
-        public IEnumerable<Tutorial> GetAllTutorial()
+        public T FirstOrDefault(Expression<Func<T, bool>> tutorial)
         {
-            return _context.Tutorial.ToList();
+            throw new NotImplementedException();
         }
 
-        public Tutorial GetTutorialById(long id)
+        public IEnumerable<T> GetAllTutorial()
         {
-            return _context.Tutorial.FirstOrDefault(k => k.ID == id);
+            return _context.Set<T>().ToList();
         }
 
-        public IEnumerable<Tutorial> GetTutorialByPublished()
+        public T GetTutorialById(long id)
         {
-            return _context.Tutorial.Where(published => published.Published == true).ToList();
+            return _context.Set<T>().FirstOrDefault(k => k.ID == id);
         }
 
-        public IEnumerable<Tutorial> GetTutorialByPublished(string title)
+        public IEnumerable<T> GetTutorialByPublished()
         {
-            return _context.Tutorial.Where(published => (published.Published == true)&&(published.Title == title)).ToList();
+            return _context.Set<T>().Where(published => published.Published == true).ToList();
         }
 
-        public IEnumerable<Tutorial> GetTutorialByTitle(string title)
+        public IEnumerable<T> GetTutorialByPublished(string title)
         {
-            return _context.Tutorial.Where(tutorial => tutorial.Title == title).ToList();
+            return _context.Set<T>().Where(published => (published.Published == true)&&(published.Title == title)).ToList();
+        }
+
+        public IEnumerable<T> GetTutorialByPublished(Expression<Func<T, bool>> expression)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<T> GetTutorialByTitle(string title)
+        {
+            return _context.Set<T>().Where(tutorial => tutorial.Title == title).ToList();
         }
 
         public bool SaveChanges()
@@ -72,9 +82,14 @@ namespace ASpNetAPI.Data
            return (_context.SaveChanges() >= 0);
         }
 
-        public void UpdateTutorial(Tutorial tutorial)
+        public void UpdateTutorial(T tutorial)
         {
             //throw new NotImplementedException();
+        }
+
+        T ITutorialRepo<T>.GetTutorialById(long id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
