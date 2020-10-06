@@ -43,7 +43,7 @@ namespace ASpNetAPI
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddScoped<ITutorialRepo<Tutorial>, MySQTutorialRepo<Tutorial>>();
-            
+            services.AddScoped<ITutorialRepoAsync<Tutorial>, MySQTutorialRepo<Tutorial>>();
             //services
             //.AddEntityFrameworkInMemoryDatabase()
             //.AddDbContext<ASpNetAPIContext>((sp, options) =>

@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace ASpNetAPI.Data
 {
-    interface ITutorialRepoAsync<T> where T : ITutorial
+    public interface ITutorialRepoAsync<T> where T : ITutorial
     {
-        bool SaveChanges();
-        Task<IEnumerable<Tutorial>> GetAllTutorial();
-        Task<IEnumerable<Tutorial>> GetTutorialByPublished();
-        Task<IEnumerable<Tutorial>> GetTutorialByPublished(string title);
-        Task<IEnumerable<Tutorial>> GetTutorialByTitle(string title);
+        Task<bool> SaveChangesAsync();
+        Task<IEnumerable<T>> GetAllTutorial();
+        Task<IEnumerable<T>> GetTutorialByPublished();
+        Task<IEnumerable<T>> GetTutorialByPublished(string title);
+        Task<IEnumerable<T>> GetTutorialByTitle(string title);
         Task<T> FirstOrDefault(Expression<Func<T, bool>> tutorial);
-        Task<Tutorial> GetTutorialById(long id);
-        Task CreateTutorial(Tutorial tutorial);
-        Task UpdateTutorial(Tutorial tutorial);
-        Task DeleteTutorial(Tutorial tutorial);
-        Task DeleteAllTutorial(IEnumerable<Tutorial> tutorial);
+        Task<T> GetTutorialById(long id);
+        Task CreateTutorial(T tutorial);
+        Task UpdateTutorial(T tutorial);
+        Task DeleteTutorial(T tutorial);
+        Task DeleteAllTutorial(IEnumerable<T> tutorial);
     }
 }
