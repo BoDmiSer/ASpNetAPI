@@ -25,10 +25,12 @@ namespace ASpNetAPI.Controllers
         //private readonly MockTutorialRepo _repo = new MockTutorialRepo();
 
         private readonly ITutorialRepo<Tutorial> _repo;
+        private readonly ITutorialRepoAsync<Tutorial> _repoasync;
 
-        public TutorialsController(ITutorialRepo<Tutorial> repository, ASpNetAPIContext context, IMapper mapper)
+        public TutorialsController(ITutorialRepo<Tutorial> repository, ITutorialRepoAsync<Tutorial> repositoryasync, ASpNetAPIContext context, IMapper mapper)
         {
             _repo = repository;
+            _repoasync = repositoryasync;
             _context = context;
             _mapper = mapper;
         }
@@ -39,12 +41,14 @@ namespace ASpNetAPI.Controllers
             IEnumerable<Tutorial> Tutorials;
             if (title == null)
             {
-                Tutorials = await _context.Tutorial.Skip(page).Take(size).ToListAsync();
+                //Tutorials = await _context.Tutorial.Skip(page).Take(size).ToListAsync();
+                Tutorials = await _repoasync.GetAllTutorialAsync();
                 //Tutorials = _repo.GetAllTutorial();
             }
             else
             {
-                Tutorials = await _context.Tutorial.Skip(page).Take(size).ToListAsync();
+                Tutorials = await _repoasync.GetTutorialByTitleAsync(title);
+                //Tutorials = await _context.Tutorial.Skip(page).Take(size).ToListAsync();
 
                 //Tutorials = _repo.GetTutorialByTitle(title);
             }
@@ -55,9 +59,9 @@ namespace ASpNetAPI.Controllers
 
         // GET: api/Tutorials/5
         [HttpGet("{id}", Name = "GetTutorialById")]
-        public ActionResult<TutorialReadDto> GetTutorialById(long id)
+        public async Task<ActionResult<TutorialReadDto>> GetTutorialById(long id)
         {
-            var tutorial = _repo.GetTutorialById(id);
+            var tutorial = await _repoasync.GetTutorialByIdAsync(id);
 
             if (tutorial == null)
             {
@@ -68,16 +72,16 @@ namespace ASpNetAPI.Controllers
         }
 
         [HttpGet("published")]
-        public ActionResult<PageTutorialDto> GetTutorialByPublished(string title, int page = 0, int size = 4)
+        public async Task<ActionResult<PageTutorialDto>> GetTutorialByPublished(string title, int page = 0, int size = 4)
         {
             IEnumerable<Tutorial> Tutorials;
             if (title == null)
             {
-                Tutorials = _repo.GetTutorialByPublished();
+                Tutorials = await _repoasync.GetTutorialByPublishedAsync();
             }
             else
             {
-                Tutorials = _repo.GetTutorialByPublished(title);
+                Tutorials = await _repoasync.GetTutorialByPublishedAsync(title);
             }
             PageTutorialViewModel<Tutorial> PaginationTutorialViewModel;
             PaginationTutorialViewModel = PageTutorialViewModel<Tutorial>.Create(Tutorials, page, size);
@@ -86,27 +90,27 @@ namespace ASpNetAPI.Controllers
 
         //Put api/Tutorial/{id}
         [HttpPut("{id}")]
-        public ActionResult UpdateTutorial(long id, TutorialUpdateDto tutorialUpdateDto)
+        public async Task<ActionResult> UpdateTutorial(long id, TutorialUpdateDto tutorialUpdateDto)
         {
-            var tutorialModelFromRepo = _repo.GetTutorialById(id);
+            var tutorialModelFromRepo = await _repoasync.GetTutorialByIdAsync(id);
             if (tutorialModelFromRepo == null)
             {
                 return NotFound();
             }
             _mapper.Map(tutorialUpdateDto, tutorialModelFromRepo);
-            _repo.UpdateTutorial(tutorialModelFromRepo);
-            _repo.SaveChanges();
+            await _repoasync.UpdateTutorialAsync(tutorialModelFromRepo);
+            await _repoasync.SaveChangesAsync();
             return NoContent();
         }
 
 
         // POST: api/Tutorials
         [HttpPost]
-        public ActionResult<TutorialReadDto> CreateCommand(TutorialCreateDto createtutorial)
+        public async Task<ActionResult<TutorialReadDto>> CreateCommand(TutorialCreateDto createtutorial)
         {
             var tutorialModel = _mapper.Map<Tutorial>(createtutorial);
-            _repo.CreateTutorial(tutorialModel);
-            _repo.SaveChanges();
+            await _repoasync.CreateTutorialAsync(tutorialModel);
+            await _repoasync.SaveChangesAsync();
             var tutorialReadDto = _mapper.Map<TutorialReadDto>(tutorialModel);
 
             return CreatedAtRoute(nameof(GetTutorialById), new { Id = tutorialReadDto.ID }, tutorialReadDto);
@@ -116,9 +120,9 @@ namespace ASpNetAPI.Controllers
 
         //PATCH api/Tutotrials/{id}
         [HttpPatch("{id}")]
-        public ActionResult PartialTutorialUpdate(long id, JsonPatchDocument<TutorialUpdateDto> patchDocument)
+        public async Task<ActionResult> PartialTutorialUpdate(long id, JsonPatchDocument<TutorialUpdateDto> patchDocument)
         {
-            var tutorialModelFromRepo = _repo.GetTutorialById(id);
+            var tutorialModelFromRepo = await _repoasync.GetTutorialByIdAsync(id);
             if (tutorialModelFromRepo == null)
             {
                 return NotFound();
@@ -130,37 +134,37 @@ namespace ASpNetAPI.Controllers
                 return ValidationProblem(ModelState);
             }
             _mapper.Map(tutorialToPath, tutorialModelFromRepo);
-            _repo.UpdateTutorial(tutorialModelFromRepo);
-            _repo.SaveChanges();
+            await _repoasync.UpdateTutorialAsync(tutorialModelFromRepo);
+            await _repoasync.SaveChangesAsync();
             return NoContent();
 
         }
 
         // DELETE: api/Tutorials/5
         [HttpDelete("{id}")]
-        public ActionResult DeleteTutorialById(long id)
+        public async Task<ActionResult> DeleteTutorialById(long id)
         {
-            var tutorialModelFromRepo = _repo.GetTutorialById(id);
+            var tutorialModelFromRepo = await _repoasync.GetTutorialByIdAsync(id);
             if (tutorialModelFromRepo == null)
             {
                 return NotFound();
             }
-            _repo.DeleteTutorial(tutorialModelFromRepo);
-            _repo.SaveChanges();
+            await _repoasync.DeleteTutorialAsync(tutorialModelFromRepo);
+            await _repoasync.SaveChangesAsync();
             return NoContent();
         }
 
         // DELETE: api/Tutorials
         [HttpDelete]
-        public ActionResult DeleteTutorial()
+        public async Task<ActionResult> DeleteTutorial()
         {
-            var tutorialModelFromRepo = _repo.GetAllTutorial();
+            var tutorialModelFromRepo = await _repoasync.GetAllTutorialAsync();
             if (tutorialModelFromRepo == null)
             {
                 return NotFound();
             }
-            _repo.DeleteAllTutorial(tutorialModelFromRepo);
-            _repo.SaveChanges();
+            await _repoasync.DeleteAllTutorialAsync(tutorialModelFromRepo);
+            await _repoasync.SaveChangesAsync();
             return NoContent();
         }
 

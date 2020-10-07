@@ -25,13 +25,13 @@ namespace ASpNetAPI.Data
             }
             _context.Set<T>().Add(tutorial);
         }
-        async Task ITutorialRepoAsync<T>.CreateTutorial(T tutorial)
+        public async Task CreateTutorialAsync(T tutorial)
         {
             if (tutorial == null)
             {
                 throw new ArgumentNullException(nameof(tutorial));
             }
-           await _context.Set<T>().AddAsync(tutorial);
+            await _context.Set<T>().AddAsync(tutorial);
         }
 
 
@@ -44,7 +44,7 @@ namespace ASpNetAPI.Data
             }
             _context.Set<T>().RemoveRange(tutorial);
         }
-        Task ITutorialRepoAsync<T>.DeleteAllTutorial(IEnumerable<T> tutorial)
+        public Task DeleteAllTutorialAsync(IEnumerable<T> tutorial)
         {
             if (tutorial == null)
             {
@@ -64,7 +64,7 @@ namespace ASpNetAPI.Data
             }
             _context.Set<T>().Remove(tutorial);
         }
-        Task ITutorialRepoAsync<T>.DeleteTutorial(T tutorial)
+        public Task DeleteTutorialAsync(T tutorial)
         {
             if (tutorial == null)
             {
@@ -80,9 +80,9 @@ namespace ASpNetAPI.Data
         {
             return _context.Set<T>().FirstOrDefault(tutorial);
         }
-        Task<T> ITutorialRepoAsync<T>.FirstOrDefault(Expression<Func<T, bool>> tutorial)
+        public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> tutorial)
         {
-            return _context.Set<T>().FirstOrDefaultAsync(tutorial);
+            return await _context.Set<T>().FirstOrDefaultAsync(tutorial);
         }
 
 
@@ -91,19 +91,19 @@ namespace ASpNetAPI.Data
         {
             return _context.Set<T>().ToList();
         }
-        async Task<IEnumerable<T>> ITutorialRepoAsync<T>.GetAllTutorial()
+        public async Task<IEnumerable<T>> GetAllTutorialAsync()
         {
             return await _context.Set<T>().ToListAsync();
         }
-        
-        
+
+
         public T GetTutorialById(long id)
         {
             return _context.Set<T>().First(k => k.ID == id);
         }
-        Task<T> ITutorialRepoAsync<T>.GetTutorialById(long id)
+        public async Task<T> GetTutorialByIdAsync(long id)
         {
-            return _context.Set<T>().FirstAsync(k => k.ID == id);
+            return await _context.Set<T>().FirstAsync(k => k.ID == id);
         }
 
 
@@ -112,7 +112,7 @@ namespace ASpNetAPI.Data
         {
             return _context.Set<T>().Where(published => published.Published == true).ToList();
         }
-        async Task<IEnumerable<T>> ITutorialRepoAsync<T>.GetTutorialByPublished()
+        public async Task<IEnumerable<T>> GetTutorialByPublishedAsync()
         {
             return await _context.Set<T>().Where(published => published.Published == true).ToListAsync();
         }
@@ -123,7 +123,7 @@ namespace ASpNetAPI.Data
         {
             return _context.Set<T>().Where(published => (published.Published == true)&&(published.Title == title)).ToList();
         }
-        async Task<IEnumerable<T>> ITutorialRepoAsync<T>.GetTutorialByPublished(string title)
+        public async Task<IEnumerable<T>> GetTutorialByPublishedAsync(string title)
         {
             return await _context.Set<T>().Where(published => (published.Published == true) && (published.Title == title)).ToListAsync();
         }
@@ -134,7 +134,7 @@ namespace ASpNetAPI.Data
         {
             return _context.Set<T>().Where(tutorial => tutorial.Title == title).ToList();
         }
-        async Task<IEnumerable<T>> ITutorialRepoAsync<T>.GetTutorialByTitle(string title)
+        public async Task<IEnumerable<T>> GetTutorialByTitleAsync(string title)
         {
             return await _context.Set<T>().Where(tutorial => tutorial.Title == title).ToListAsync();
         }
@@ -156,10 +156,10 @@ namespace ASpNetAPI.Data
         {
             //throw new NotImplementedException();
         }
-        Task ITutorialRepoAsync<T>.UpdateTutorial(T tutorial)
+        public Task UpdateTutorialAsync(T tutorial)
         {
             _context.Entry(tutorial).State = EntityState.Modified;
             return _context.SaveChangesAsync();
-        }       
+        }    
     }
 }
