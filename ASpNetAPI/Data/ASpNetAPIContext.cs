@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ASpNetAPI.Models;
+using ASpNetAPI.Models.Authentication;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ASpNetAPI.Data
 {
-    public class ASpNetAPIContext : DbContext
+    public class ASpNetAPIContext : IdentityDbContext<User>
     {
         public ASpNetAPIContext (DbContextOptions<ASpNetAPIContext> options)
             : base(options)

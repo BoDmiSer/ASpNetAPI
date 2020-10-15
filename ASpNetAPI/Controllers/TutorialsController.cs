@@ -41,16 +41,11 @@ namespace ASpNetAPI.Controllers
             IEnumerable<Tutorial> Tutorials;
             if (title == null)
             {
-                //Tutorials = await _context.Tutorial.Skip(page).Take(size).ToListAsync();
                 Tutorials = await _repoasync.GetAllTutorialAsync();
-                //Tutorials = _repo.GetAllTutorial();
             }
             else
             {
                 Tutorials = await _repoasync.GetTutorialByTitleAsync(title);
-                //Tutorials = await _context.Tutorial.Skip(page).Take(size).ToListAsync();
-
-                //Tutorials = _repo.GetTutorialByTitle(title);
             }
             PageTutorialViewModel<Tutorial> PaginationTutorialViewModel;
             PaginationTutorialViewModel = PageTutorialViewModel<Tutorial>.Create(Tutorials, page,size);

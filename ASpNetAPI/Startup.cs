@@ -16,6 +16,11 @@ using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using AutoMapper;
 using Newtonsoft.Json.Serialization;
 using ASpNetAPI.Models;
+using ASpNetAPI.Models.Authentication;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace ASpNetAPI
 {
@@ -33,6 +38,7 @@ namespace ASpNetAPI
         {
             //services.AddDbContext<ASpNetAPIContext>(opt => opt.UseInMemoryDatabase("ASpNetAPIContext"));
             services.AddDbContextPool<ASpNetAPIContext>(opt => opt.UseMySql(Configuration.GetConnectionString("ASpNetAPIContext"))) ;
+            services.AddControllersWithViews().AddDataAnnotationsLocalization();
             services.AddControllers().AddNewtonsoftJson(s =>
             {
                 s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -44,6 +50,29 @@ namespace ASpNetAPI
 
             services.AddScoped<ITutorialRepo<Tutorial>, MySQTutorialRepo<Tutorial>>();
             services.AddScoped<ITutorialRepoAsync<Tutorial>, MySQTutorialRepo<Tutorial>>();
+            services.AddIdentity<User, IdentityRole>().
+                AddEntityFrameworkStores<ASpNetAPIContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+              .AddJwtBearer(options =>
+              {
+                  options.SaveToken = true;
+                  options.RequireHttpsMetadata = false;
+                  options.TokenValidationParameters = new TokenValidationParameters()
+                  {
+                      ValidateIssuer = true,
+                      ValidateAudience = true,
+                      ValidAudience = Configuration["JWT:ValidAudience"],
+                      ValidIssuer = Configuration["JWT:ValidIssuer"],
+                      IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
+                  };
+              });
             //services
             //.AddEntityFrameworkInMemoryDatabase()
             //.AddDbContext<ASpNetAPIContext>((sp, options) =>
